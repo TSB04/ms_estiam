@@ -25,6 +25,12 @@ export class UsersService {
     return "This action returns a #${id} user";
   }
 
+  async findByUsername(username: string) {
+    return this.userRepository.findOne( 
+      { where: { username } }
+    );
+  }
+
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     return this.userRepository.save({ id, ...updateUserDto });
   }
