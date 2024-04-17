@@ -12,4 +12,8 @@ export class User {
     password: string;
 
     // Add more columns as needed
+
+    async validatePassword(password: string): Promise<boolean> {
+        return this.password === password;
+    }
 }
