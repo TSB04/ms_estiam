@@ -1,0 +1,3 @@
+[submodule "vitrine"]
+	path = vitrine
+	url = https://github.com/TSB04/ms_front.git
