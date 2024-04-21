@@ -1,5 +1,3 @@
-// auth.controller.ts
-
 import { Controller, Post, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
@@ -13,13 +11,8 @@ export class AuthController {
   ) {}
 
   @Post()
-  async login(@Body() loginDto: LoginDto) {
-    const { username, password } = loginDto;
-    const user = await this.usersService.findByUsername(username);
-    if (!user || !await user.validatePassword(password)) {
-      throw new Error('Invalid username or password');
-    }
-    const token = await this.authService.generateJwtToken(user);
-    return { token };
+  async logUser(@Body() loginDto: LoginDto) {
+    return this.authService.login(loginDto);
   }
+    
 }
