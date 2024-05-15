@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+  msestiam:
+    image: msestiam
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+    env_file:   # Add this line to specify the path to your .env file
+      - .env    # Specify the path to your .env file
+    ports:
+      - 4040:4040
