@@ -1,32 +1,36 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
+import configuration from './config/configuration';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-    isGlobal: true, // Make ConfigModule available globally
-  }),
-  TypeOrmModule.forRoot(
-    {
-      "type": "mysql",
-      "host": "127.0.0.1",
-      "port": 3306,
-      "username": "root",
-      "password": "tsb0408",
-      "database": "msdb",
-      "entities": ["dist/**/*.entity{.ts,.js}"],
-      "synchronize": true,
-    }
-
-  ),
+      isGlobal: true, // Make ConfigModule available globally
+      load: [configuration],
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        type: 'mysql',
+        host: configService.get<string>('DBSQL.host'),
+        port: configService.get<number>('DBSQL.port'),
+        username: configService.get<string>('DBSQL.username'),
+        password: configService.get<string>('DBSQL.password'),
+        database: configService.get<string>('DBSQL.database'),
+        synchronize: configService.get<boolean>('DBSQL.synchronize'),
+        entities: configService.get<string[]>('DBSQL.entities'),
+      }),
+      inject: [ConfigService],
+    }),
     UsersModule,
-    AuthModule],
+    AuthModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
