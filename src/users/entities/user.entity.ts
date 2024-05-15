@@ -11,22 +11,20 @@ export class User {
     @Column()
     password: string;
 
-    @Column({ unique: true })
+    @Column({nullable: true, unique: true})
     email: string;
 
-    @Column()
+    @Column({nullable: true})
     firstName: string;
 
-    @Column()
+    @Column({nullable: true})
     lastName: string;
 
-    @Column({ unique: true })
+    @Column({nullable: true, unique: true})
     phone: number;
 
-    @Column()
+    @Column({nullable: true})
     address: string;
-
-    // Add more columns as needed
 
     async validatePassword(password: string): Promise<boolean> {
         return this.password === password;
