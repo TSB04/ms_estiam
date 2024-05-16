@@ -5,13 +5,12 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 
-
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-  ) { }
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
     return await this.userRepository.save(createUserDto);
@@ -22,13 +21,11 @@ export class UsersService {
   }
 
   async findOne(id: number) {
-    return "This action returns a #${id} user";
+    return await this.userRepository.findOne({ where: { id } });
   }
 
   async findByUsername(username: string) {
-    return this.userRepository.findOne( 
-      { where: { username } }
-    );
+    return this.userRepository.findOne({ where: { username } });
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
