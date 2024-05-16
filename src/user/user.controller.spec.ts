@@ -80,7 +80,7 @@ describe('UserController', () => {
         firstName: 'Updated',
         lastName: 'User',
         address: 'Updated Address',
-        phoneNumber: 987654321,
+        phoneNumber: "0987654321",
         email: 'test@test.sn',
         username: 'updateduser',
         password: 'password',

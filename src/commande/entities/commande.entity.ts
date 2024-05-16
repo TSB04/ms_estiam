@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { User } from '../../users/entities/user.entity';
+import { User } from '../../user/entities/user.entity';
 
 @Entity()
 export class Commande {
@@ -18,7 +18,7 @@ export class Commande {
   @Column({ type: 'date' })
   date: Date;
 
-  @ManyToOne(() => User, (user) => user.id)
+  @ManyToOne(() => User, (user) => user.username)
   user: User;
 
   async validateQuantity(availableQuantity: number): Promise<boolean> {
