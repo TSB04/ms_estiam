@@ -24,14 +24,13 @@ export class UsersController {
     private readonly commandeService: CommandeService,
   ) {}
 
+
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
-    console.log(createUserDto);
     return this.usersService.create(createUserDto);
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
   async findAll(): Promise<User[]> {
     return this.usersService.findAll();
   }

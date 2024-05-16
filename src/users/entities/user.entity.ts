@@ -5,13 +5,27 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  username: string;
+
+    @Column({ unique: true })
+    username: string;
 
   @Column()
   password: string;
 
-  // Add more columns as needed
+    @Column({ unique: true })
+    email: string;
+
+    @Column()
+    firstName: string;
+
+    @Column()
+    lastName: string;
+
+    @Column({ unique: true })
+    phone: number;
+
+    @Column()
+    address: string;
 
   async validatePassword(password: string): Promise<boolean> {
     return this.password === password;
