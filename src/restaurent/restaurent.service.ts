@@ -1,6 +1,4 @@
-// src/restaurent/restaurent.service.ts
-
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateRestaurentDto } from './dto/create-restaurent.dto';
@@ -13,7 +11,7 @@ export class RestaurentService {
     private readonly restaurentRepository: Repository<Restaurent>,
   ) {}
 
-  async create(createRestaurentDto: CreateRestaurentDto) {
+  async create(createRestaurentDto: CreateRestaurentDto): Promise<Restaurent> {
     return await this.restaurentRepository.save(createRestaurentDto);
   }
 
@@ -21,24 +19,26 @@ export class RestaurentService {
     return await this.restaurentRepository.find();
   }
 
-  async findOne(id: number) {
-    return await this.restaurentRepository.findOne({ where: { id } });
+  async findOne(id: number): Promise<Restaurent | null> {
+    const restaurent = await this.restaurentRepository.findOne({
+      where: { id },
+    });
+    if (!restaurent) {
+      return null;
+    }
+    return restaurent;
   }
 
   async update(
     id: number,
     updateRestaurentDto: UpdateRestaurentDto,
-  ): Promise<Restaurent> {
-    const existingRestaurent = await this.restaurentRepository.findOne({
-      where: { id },
-    });
+  ): Promise<Restaurent | null> {
+    const existingRestaurent = await this.findOne(id);
     if (!existingRestaurent) {
       return null;
     }
-    return await this.restaurentRepository.save({
-      ...existingRestaurent,
-      ...updateRestaurentDto,
-    });
+    const updatedRestaurent = { ...existingRestaurent, ...updateRestaurentDto };
+    return await this.restaurentRepository.save(updatedRestaurent);
   }
 
   async remove(id: number): Promise<void> {
