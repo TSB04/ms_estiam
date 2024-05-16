@@ -1,36 +1,35 @@
 import { Injectable } from '@nestjs/common';
+import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '../users/entities/user.entity';
-import { UsersService } from '../users/users.service';
-import { LoginDto } from './login.dto';
-
+import { LogUserDto } from '../user/dto/log-user.dto';
+import { UserPrivilegeDto } from '../user/dto/response-user.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly jwtService: JwtService, private readonly usersService: UsersService ) {}
+  constructor(
+    private readonly usersService: UserService,
+    private readonly jwtService: JwtService,
+  ) {}
 
-  async generateJwtToken(user: User): Promise<string> {
-    const payload = { username: user.username, sub: user.id };
-    return this.jwtService.sign(payload);
+  async validateUser(
+    logUserDto: LogUserDto,
+  ): Promise<{ access_token: string }> {
+    const { username, password } = logUserDto;
+    const user = await this.usersService.findByUserName(username);
+    await this.usersService.comparePasswords(password, user.password);
+
+    // Create and return a UserPrivilegeDto
+    const userResponseDto: UserPrivilegeDto = {
+      username: user.username,
+      email: user.email,
+      isActive: user.isActive,
+      isAdmin: user.isAdmin,
+      isVerified: user.isVerified,
+      isOwner: user.isOwner,
+    };
+
+    // Generate token and return it along with the user information
+    const token = this.jwtService.sign(userResponseDto);
+    return { access_token: token };
   }
-
-  async validateJwtToken(token: string): Promise<any> {
-    try {
-      const decoded = this.jwtService.verify(token);
-      return decoded;
-    } catch (error) {
-      throw new Error('Invalid token');
-    }
-  }
-
-  async login(loginDto: LoginDto) {
-    const { username, password } = loginDto;
-    const user = await this.usersService.findByUsername(username);
-    if (!user || !await user.validatePassword(password)) {
-      throw new Error('Invalid username or password');
-    }
-    const token = await this.generateJwtToken(user);
-    return { token };
-  }
-
 }

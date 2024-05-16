@@ -3,12 +3,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Commande } from './entities/commande.entity';
 import { CommandeService } from './commande.service';
 import { CommandeController } from './commande.controller';
-import { UsersModule } from 'src/users/users.module';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Commande]),
-    forwardRef(() => UsersModule),
+    forwardRef(() => UserModule),
   ],
   controllers: [CommandeController],
   providers: [CommandeService],

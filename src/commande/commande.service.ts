@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateCommandeDto } from './dto/create-commande.dto';
 import { Commande } from './entities/commande.entity';
-import { UsersService } from '../users/users.service';
+import { UserService } from '../user/user.service';
 import { UpdateCommandeDto } from './dto/update-commande.dto';
 
 @Injectable()
@@ -11,11 +11,11 @@ export class CommandeService {
   constructor(
     @InjectRepository(Commande)
     private readonly commandeRepository: Repository<Commande>,
-    private readonly usersService: UsersService,
+    private readonly usersService: UserService,
   ) {}
 
-  async create(createCommandeDto: CreateCommandeDto, userId: number) {
-    const user = await this.usersService.findOne(userId);
+  async create(createCommandeDto: CreateCommandeDto, userName: string) {
+    const user = await this.usersService.findByUserName(userName);
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -28,8 +28,8 @@ export class CommandeService {
     return await this.commandeRepository.save(commande);
   }
 
-  async findAllByUser(userId: number): Promise<Commande[]> {
-    const user = await this.usersService.findOne(userId);
+  async findAllByUser(userName: string): Promise<Commande[]> {
+    const user = await this.usersService.findByUserName(userName);
     if (!user) {
       throw new NotFoundException('User not found');
     }
