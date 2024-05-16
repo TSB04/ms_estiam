@@ -13,10 +13,13 @@ import {
 import { CommandeService } from './commande.service';
 import { CreateCommandeDto } from './dto/create-commande.dto';
 import { UpdateCommandeDto } from './dto/update-commande.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('commande')
 export class CommandeController {
+  findAllByUser(arg0: string) {
+    throw new Error('Method not implemented.');
+  }
   constructor(private readonly commandeService: CommandeService) {}
 
   @UseGuards(JwtAuthGuard)
